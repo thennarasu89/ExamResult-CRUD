@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.Exam_result.Service.ResultService;
 import com.project.Exam_result.dto.Input;
 import com.project.Exam_result.dto.Response;
+
+import jakarta.validation.Valid;
+
 import com.project.Exam_result.dto.Request;
 
 
@@ -26,7 +29,7 @@ public class ResultController {
 	private ResultService resultService;
 	
 	@PostMapping("/save")
-	public ResponseEntity<String> saveResult(@RequestBody Input input){
+	public ResponseEntity<String> saveResult(@Valid @RequestBody Input input){
 		resultService.saveResult(input);
 		return ResponseEntity.ok("Result saved ");
 		

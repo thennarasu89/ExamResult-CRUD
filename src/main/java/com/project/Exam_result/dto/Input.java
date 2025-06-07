@@ -1,5 +1,6 @@
 package com.project.Exam_result.dto;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
@@ -8,12 +9,34 @@ public class Input {
 	
 	private Long Regno;
 	
-	
+	@NotNull(message = "/Mark1 is required")
+	@Min(value = 0, message = "/must be postive value")
+	@Max(value = 100, message = "/must be less than 100")
     private int mark1;
+    
+    @NotNull(message = "/Mark2 is required")
+	@Min(value = 0, message = "/must be postive value")
+	@Max(value = 100, message = "/must be less than 100")
     private int mark2;
+    
+    @NotNull(message = "/Mark3 is required")
+	@Min(value = 0, message = "/must be postive value")
+	@Max(value = 100, message = "/must be less than 100")
     private int mark3;
+    
+    @NotNull(message = "/Mark4 is required")
+	@Min(value = 0, message = "/must be postive value")
+	@Max(value = 100, message = "/must be less than 100")
     private int mark4;
+    
+    @NotNull(message = "/Mark5 is required")
+	@Min(value = 0, message = "/must be postive value")
+	@Max(value = 100, message = "/must be less than 100")
     private int mark5;
+    
+    @NotNull(message = "/Mark6 is required")
+	@Min(value = 0, message = "/must be postive value")
+	@Max(value = 100, message = "/must be less than 100")
     private int mark6;
 
     // No-arg constructor
