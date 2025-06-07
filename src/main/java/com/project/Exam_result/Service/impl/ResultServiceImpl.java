@@ -7,6 +7,7 @@ import jakarta.persistence.Version;
 
 import com.project.Exam_result.dto.*;
 import com.project.Exam_result.Entity.*;
+import com.project.Exam_result.Exception.ResourceNotFound;
 import com.project.Exam_result.Repo.*;
 
 import java.util.Optional;
@@ -54,7 +55,7 @@ public class ResultServiceImpl implements ResultService{
 		
 		else {
 			
-			Student student = studentRepo.findById(input.getRegno()).orElseThrow(() -> new RuntimeException("Student not found"));
+			Student student = studentRepo.findById(input.getRegno()).orElseThrow(() -> new ResourceNotFound("Student not found with Register number:" + input.getRegno()));
 		Result examResult = new Result();
 		examResult.setStudent(student);
 		examResult.setMark1(input.getMark1());
@@ -82,13 +83,13 @@ public class ResultServiceImpl implements ResultService{
 }
 	@Override
 	public Response fetchResult(Request dto) {
-		Student student = studentRepo.findById(dto.getRegno()).orElseThrow(() -> new RuntimeException("Student not found"));
+		Student student = studentRepo.findById(dto.getRegno()).orElseThrow(() -> new ResourceNotFound("Student not found with Register number:" + dto.getRegno()));
 		
 		
 		if(!student.getDob().equals(dto.getDob())) {
-			throw new RuntimeException("Enter the proper DOB");
+			throw new ResourceNotFound("Enter Correct DOB for Register number:" + dto.getRegno());
 		}
-		Result result = resultRepo.findById(dto.getRegno()).orElseThrow(() -> new RuntimeException("Result not found"));
+		Result result = resultRepo.findById(dto.getRegno()).orElseThrow(() -> new ResourceNotFound("Student not found with Register number:" + dto.getRegno()));
 		
 		Response response = new Response();
 		response.setName(student.getName());
@@ -106,7 +107,7 @@ public class ResultServiceImpl implements ResultService{
 	
 	@Override
 	public void updateResult(Input dto) {
-		Result result = resultRepo.findById(dto.getRegno()).orElseThrow(() -> new RuntimeException("Result not found"));
+		Result result = resultRepo.findById(dto.getRegno()).orElseThrow(() -> new ResourceNotFound("Result Data not found with Register number:" + dto.getRegno()));
 		
 		result.setMark1(dto.getMark1());
 	    result.setMark2(dto.getMark2());
@@ -130,7 +131,7 @@ public class ResultServiceImpl implements ResultService{
 	@Override
 	public void deleteResult(Long Regno) {
 		if(!resultRepo.existsById(Regno)) {
-			throw new RuntimeException("Result not found for Regno: " + Regno);
+			throw new ResourceNotFound("Result Data  not found with Register number:" + Regno);
 		}
 		
 		resultRepo.deleteById(Regno);
