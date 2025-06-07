@@ -1,7 +1,14 @@
 package com.project.Exam_result.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 public class Input {
+	
+	
 	private Long Regno;
+	
+	
     private int mark1;
     private int mark2;
     private int mark3;

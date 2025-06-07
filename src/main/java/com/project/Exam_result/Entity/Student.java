@@ -5,12 +5,16 @@ import java.time.LocalDate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name="students")
 
 public class Student {
 	@Id
+	@NotNull(message="/Register number is must")
+	@Min(value=10000,message="/Register number must be greater than 10000")
 	private long regno;
 
 	private String Name;
