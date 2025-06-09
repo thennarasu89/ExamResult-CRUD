@@ -17,10 +17,12 @@ import org.hibernate.engine.spi.ExecuteUpdateResultCheckStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @Service
 public class ResultServiceImpl implements ResultService{
+	private static final Logger LOGGER = LoggerFactory.getLogger(ResultServiceImpl.class);
+	
 	@Autowired
 	private StudentRepo studentRepo;
 	
@@ -50,12 +52,15 @@ public class ResultServiceImpl implements ResultService{
 			existingResult.setResult(Result);
 			
 			resultRepo.saveAndFlush(existingResult);
+			LOGGER.info("Saving result for student with Register number {}",input.getRegno());
 			
 		}
 		
 		else {
 			
-			Student student = studentRepo.findById(input.getRegno()).orElseThrow(() -> new ResourceNotFound("Student not found with Register number:" + input.getRegno()));
+			Student student = studentRepo.findById(input.getRegno()).orElseThrow(() ->{
+				LOGGER.error("Student with This register number not found : {}",input.getRegno());
+			 return new ResourceNotFound("Student not found with Register number:" + input.getRegno());});
 		Result examResult = new Result();
 		examResult.setStudent(student);
 		examResult.setMark1(input.getMark1());
@@ -78,18 +83,26 @@ public class ResultServiceImpl implements ResultService{
 		
 		
 		resultRepo.save(examResult);
+		LOGGER.info("Saving result for student with Register number {}",input.getRegno());
 		}
 	
 }
 	@Override
 	public Response fetchResult(Request dto) {
-		Student student = studentRepo.findById(dto.getRegno()).orElseThrow(() -> new ResourceNotFound("Student not found with Register number:" + dto.getRegno()));
+		Student student = studentRepo.findById(dto.getRegno()).orElseThrow(() ->{
+			LOGGER.error("Student with This register number not found : {}",dto.getRegno());
+		return new ResourceNotFound("Student not found with Register number:" + dto.getRegno());});
 		
 		
 		if(!student.getDob().equals(dto.getDob())) {
+			LOGGER.error("User Entered Wrong DOB for Register number {}",dto.getRegno());
+
 			throw new ResourceNotFound("Enter Correct DOB for Register number:" + dto.getRegno());
 		}
-		Result result = resultRepo.findById(dto.getRegno()).orElseThrow(() -> new ResourceNotFound("Student not found with Register number:" + dto.getRegno()));
+		Result result = resultRepo.findById(dto.getRegno()).orElseThrow(() -> {
+			LOGGER.error("Result for This register number not found : {}",dto.getRegno());
+		
+		return new ResourceNotFound("Result not found with Register number:" + dto.getRegno());});
 		
 		Response response = new Response();
 		response.setName(student.getName());
@@ -102,12 +115,16 @@ public class ResultServiceImpl implements ResultService{
 		response.setResult(result.getResult());
 		response.setTotal(result.getTotal());
 		
+		
+		LOGGER.info("Fetched result for student with Register number {}",dto.getRegno());
 		return response;
 	}
 	
 	@Override
 	public void updateResult(Input dto) {
-		Result result = resultRepo.findById(dto.getRegno()).orElseThrow(() -> new ResourceNotFound("Result Data not found with Register number:" + dto.getRegno()));
+		Result result = resultRepo.findById(dto.getRegno()).orElseThrow(() -> {
+			LOGGER.error("Result for This register number not found : {}",dto.getRegno());
+		return new ResourceNotFound("Result Data not found with Register number:" + dto.getRegno());});
 		
 		result.setMark1(dto.getMark1());
 	    result.setMark2(dto.getMark2());
@@ -125,12 +142,14 @@ public class ResultServiceImpl implements ResultService{
                 ? "Pass" : "Fail";
         result.setResult(status);
         resultRepo.save(result);
-		
+		LOGGER.info("Result updated for student with Register number {}",dto.getRegno());
+
 	}
 	
 	@Override
 	public void deleteResult(Long Regno) {
 		if(!resultRepo.existsById(Regno)) {
+			LOGGER.info("Result deleted for student with Register Number {}",Regno);
 			throw new ResourceNotFound("Result Data  not found with Register number:" + Regno);
 		}
 		
