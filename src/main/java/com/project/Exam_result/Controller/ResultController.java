@@ -4,6 +4,7 @@ import java.awt.im.InputContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,12 +30,14 @@ public class ResultController {
 	private ResultService resultService;
 	
 	@PostMapping("/save")
+	@PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
 	public ResponseEntity<String> saveResult(@Valid @RequestBody Input input){
 		resultService.saveResult(input);
 		return ResponseEntity.ok("Result saved ");
 		
 	}
 	@PostMapping("/fetch")
+	@PreAuthorize("hasRole('STUDENT') or hasRole('TEACHER') or hasRole('ADMIN')")
 	public ResponseEntity<Response> fetchResult(@RequestBody Request dto){
 		Response response = resultService.fetchResult(dto);
 		return ResponseEntity.ok(response);
@@ -42,12 +45,14 @@ public class ResultController {
 	}
 	
 	@PutMapping("/update")
+	@PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
 	public ResponseEntity<String> updateResult(@RequestBody Input dto){
 		resultService.updateResult(dto);
         return ResponseEntity.ok("Result updated successfully");
 	}
 	
     @DeleteMapping("/delete/{regno}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteResult(@PathVariable Long regno) {
         resultService.deleteResult(regno);
         return ResponseEntity.ok("Result deleted successfully");

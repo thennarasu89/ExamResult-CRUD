@@ -2,6 +2,7 @@ package com.project.Exam_result.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,6 +31,7 @@ public class StudentController {
 	private StudentRepo studentRepo;
 	
 	@PostMapping("/add")
+	@PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
 	public ResponseEntity<String> createStudent(@Valid @RequestBody Student student){
 		if(studentRepo.existsById(student.getRegno())) {
 			LOGGER.error("user tried to Enter duplicate entry for register number {}",student.getRegno());
@@ -41,6 +43,7 @@ public class StudentController {
 		return ResponseEntity.ok("student saved successfully");
 	}
 	@PutMapping("/update/{regno}")
+	 @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
 	public ResponseEntity<String> updateStudent(@PathVariable long regno, @Valid @RequestBody Student updatedStudent){
 		if(!studentRepo.existsById(regno)) {
 			return ResponseEntity.status(409).body("student with register number" + regno + "not exist");
